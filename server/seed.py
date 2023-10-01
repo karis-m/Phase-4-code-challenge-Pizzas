@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
-from random import choice as rc
+from random import randint, choice as rc
 
 from faker import Faker
 
 from app import app
-from .models import db, Restaurant, Pizza, RestaurantPizza
+
+from models import db, Restaurant, Pizza, RestaurantPizza
 
 fake = Faker()
 
@@ -57,16 +58,29 @@ with app.app_context():
         restaurants.append(r)
 
     db.session.add_all(restaurants)
+    db.session.commit()
 
+    # seeding pizzas
     pizzas = []
     for i in range(10):
         p = Pizza(
             name=rc(pizza_name),
             ingredient=rc(ingredients),
-            price=randint(5, 60),
         )
         pizzas.append(p)
 
     db.session.add_all(pizzas)
+    db.session.commit()
+
+    # Adding pizzas to restaurant
+    all_restaurant = Restaurant.query.all()
+    all_pizzas = Pizza.query.all()
+
+    for restaurant in all_restaurant:
+        for _ in range(rc([1, 2, 3])):
+            price = randint(1,30)
+            pizza = rc(all_pizzas)
+            rp = RestaurantPizza(restaurant_id=restaurant.id, pizza_id=pizza.id, price=price)
+            db.session.add(rp)
 
     db.session.commit()
