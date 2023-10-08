@@ -65,7 +65,7 @@ with app.app_context():
     for i in range(10):
         p = Pizza(
             name=rc(pizza_name),
-            ingredient=rc(ingredients),
+            ingredients=rc(ingredients),
         )
         pizzas.append(p)
 
@@ -77,10 +77,9 @@ with app.app_context():
     all_pizzas = Pizza.query.all()
 
     for restaurant in all_restaurant:
-        for _ in range(rc([1, 2, 3])):
-            price = randint(1,30)
-            pizza = rc(all_pizzas)
-            rp = RestaurantPizza(restaurant_id=restaurant.id, pizza_id=pizza.id, price=price)
-            db.session.add(rp)
+        price = randint(1,30)
+        pizza = rc(all_pizzas)
+        rp = RestaurantPizza(restaurant_id=restaurant.id, pizza_id=pizza.id, price=price)
+        db.session.add(rp)
 
     db.session.commit()

@@ -10,10 +10,10 @@ class Restaurant(db.Model, SerializerMixin):
     serialize_rules = ('-restaurantPizza.restaurant',)
 
     id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String, unique = True)
+    name = db.Column(db.String)
     address = db.Column(db.String)
 
-    pizzas = db.relationship('RestaurantPizza', back_populates = 'pizza')
+    pizzas = db.relationship('RestaurantPizza', back_populates = 'restaurant')
 
     def __repr__(self):
         return f'<Restaurant {self.name} for {self.address}>'
@@ -24,10 +24,10 @@ class Pizza(db.Model, SerializerMixin):
     serialize_rules = ('-restaurantPizza.pizza',)
 
     id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String, unique = True)
+    name = db.Column(db.String)
     ingredients = db.Column(db.String)
 
-    restaurant = db.relationship('RestaurantPizza', back_populates = 'restaurant')
+    restaurants = db.relationship('RestaurantPizza', back_populates = 'pizza')
 
     def __repr__(self):
         return f'<Pizza {self.name} for {self.ingredient}>'
@@ -40,12 +40,12 @@ class RestaurantPizza(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key = True)
     price = db.Column(db.Integer)
-    restaurants_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'))
+    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'))
     pizza_id = db.Column(db.Integer, db.ForeignKey('pizzas.id'))
    
     # relationships
-    restaurant = db.relationship('Restaurant', back_populates='pizza')
-    pizza = db.relationship('Pizza', back_populates='restaurant')
+    restaurant = db.relationship('Restaurant', back_populates='pizzas')
+    pizza = db.relationship('Pizza', back_populates='restaurants')
 
     def __repr__(self):
         return f'<Restaurant Pizza {self.restaurant} for {self.price}>'
